@@ -44,19 +44,40 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Hello, ${user?.name ?? 'Guest'} 👋',
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(16),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'How are you feeling today?',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hello, ${user?.name ?? 'Guest'} 👋',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'How are you feeling today?',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Track your emotions, one day at a time.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[500],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 32),
@@ -74,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Colors.blue.shade100,
                 Colors.blue.shade800,
                 () => _onItemTapped(1),
+                subtitle: 'Write your thoughts',
               ),
               _buildFeatureCard(
                 context,
@@ -82,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Colors.purple.shade100,
                 Colors.purple.shade800,
                 () => _onItemTapped(2),
+                subtitle: 'See your trend',
               ),
               _buildFeatureCard(
                 context,
@@ -90,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Colors.green.shade100,
                 Colors.green.shade800,
                 () => _onItemTapped(3),
+                subtitle: 'PHQ-9 & GAD-7',
               ),
               _buildFeatureCard(
                 context,
@@ -98,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Colors.orange.shade100,
                 Colors.orange.shade800,
                 () => _onItemTapped(4),
+                subtitle: 'Talk to your assistant',
               ),
             ],
           ),
@@ -106,28 +131,53 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFeatureCard(BuildContext context, String title, IconData icon, Color bgColor, Color iconColor, VoidCallback onTap) {
+  Widget _buildFeatureCard(BuildContext context, String title, IconData icon, Color bgColor, Color iconColor, VoidCallback onTap, {String subtitle = ''}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: bgColor,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: Border(
+            left: BorderSide(color: iconColor, width: 4),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(icon, size: 32, color: iconColor),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: iconColor,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: iconColor,
+                  ),
+                ),
+                if (subtitle.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
+              ],
             ),
           ],
         ),
