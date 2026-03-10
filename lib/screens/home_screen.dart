@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'login_screen.dart';
+import 'journal_screen.dart';
+import 'mood_tracker_screen.dart';
+import 'assessment_screen.dart';
+import 'chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -225,29 +229,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
-
-// ==========================================
-// Placeholder Screens for internal navigation
-// (Will replace these in later task segments)
-// ==========================================
-
-class JournalScreen extends StatelessWidget {
-  const JournalScreen({Key? key}) : super(key: key);
-  @override Widget build(BuildContext context) => const Center(child: Text('Journal Screen Placeholder'));
-}
-
-class MoodTrackerScreen extends StatelessWidget {
-  const MoodTrackerScreen({Key? key}) : super(key: key);
-  @override Widget build(BuildContext context) => const Center(child: Text('Mood Tracker Placeholder'));
-}
-
-class AssessmentScreen extends StatelessWidget {
-  const AssessmentScreen({Key? key}) : super(key: key);
-  @override Widget build(BuildContext context) => const Center(child: Text('Assessment Placeholder'));
-}
-
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({Key? key}) : super(key: key);
-  @override Widget build(BuildContext context) => const Center(child: Text('AI Chat Placeholder'));
 }

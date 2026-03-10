@@ -12,16 +12,34 @@ class AssessmentScreen extends StatefulWidget {
 }
 
 class _AssessmentScreenState extends State<AssessmentScreen> {
-  // A mock list of questions commonly found in tools like PHQ-9
-  final List<String> _questions = [
+  final List<String> _phq9Questions = [
     "Little interest or pleasure in doing things",
     "Feeling down, depressed, or hopeless",
     "Trouble falling or staying asleep, or sleeping too much",
     "Feeling tired or having little energy",
+    "Poor appetite or overeating",
+    "Feeling bad about yourself or that you are a failure",
+    "Trouble concentrating on things, such as reading or watching TV",
+    "Moving or speaking slowly, or being fidgety or restless",
+    "Thoughts that you would be better off dead or of hurting yourself",
   ];
+
+  final List<String> _gad7Questions = [
+    "Feeling nervous, anxious, or on edge",
+    "Not being able to stop or control worrying",
+    "Worrying too much about different things",
+    "Trouble relaxing",
+    "Being so restless that it is hard to sit still",
+    "Becoming easily annoyed or irritable",
+    "Feeling afraid as if something awful might happen",
+  ];
+
+  List<String> get _questions => _selectedTest == 'PHQ-9' ? _phq9Questions : _gad7Questions;
 
   Map<int, int> _answers = {};
   bool _isSaving = false;
+  bool _testSelected = false;
+  String _selectedTest = '';
 
   void _submitAssessment() async {
     if (_answers.length < _questions.length) {
@@ -40,7 +58,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
       
       final assessment = Assessment(
         userID: user.userID!,
-        scaleType: 'PHQ-9 (Short Mock)',
+        scaleType: _selectedTest,
         score: totalScore,
         date: now,
       );
@@ -103,40 +121,143 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     );
   }
 
+  Widget _buildSelectionScreen() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Choose Assessment',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Select the test you want to take',
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTestCard(
+                  'PHQ-9',
+                  Icons.mood,
+                  Colors.blue.shade100,
+                  Colors.blue.shade800,
+                  'Depression screening',
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildTestCard(
+                  'GAD-7',
+                  Icons.psychology,
+                  Colors.green.shade100,
+                  Colors.green.shade800,
+                  'Anxiety screening',
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTestCard(String testName, IconData icon, Color bgColor, Color iconColor, String subtitle) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedTest = testName;
+          _testSelected = true;
+          _answers.clear();
+        });
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 36, color: iconColor),
+            const SizedBox(height: 16),
+            Text(
+              testName,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: iconColor,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuestionsScreen() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Over the last 2 weeks, how often have you been bothered by any of the following problems?',
+            style: TextStyle(fontSize: 16, color: Colors.black87),
+          ),
+          const SizedBox(height: 24),
+          ...List.generate(_questions.length, (index) {
+            return _buildQuestionCard(index, _questions[index]);
+          }),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 50,
+            child: ElevatedButton(
+              onPressed: _isSaving ? null : _submitAssessment,
+              child: _isSaving
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Submit Assessment'),
+            ),
+          ),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Self Assessment'),
+        title: Text(_testSelected ? '$_selectedTest Assessment' : 'Self Assessment'),
         automaticallyImplyLeading: false,
+        leading: _testSelected
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  setState(() {
+                    _testSelected = false;
+                    _selectedTest = '';
+                    _answers.clear();
+                  });
+                },
+              )
+            : null,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Over the last 2 weeks, how often have you been bothered by any of the following problems?',
-                style: TextStyle(fontSize: 16, color: Colors.black87),
-              ),
-              const SizedBox(height: 24),
-              ...List.generate(_questions.length, (index) {
-                return _buildQuestionCard(index, _questions[index]);
-              }),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _isSaving ? null : _submitAssessment,
-                  child: _isSaving 
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Submit Assessment'),
-                ),
-              ),
-              const SizedBox(height: 32),
-            ],
-          ),
+      body: Directionality(
+        textDirection: TextDirection.ltr,
+        child: SafeArea(
+          child: _testSelected ? _buildQuestionsScreen() : _buildSelectionScreen(),
         ),
       ),
     );
