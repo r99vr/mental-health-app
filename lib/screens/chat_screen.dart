@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final String? initialMessage;
+  final int? assessmentScore;
+  final String? assessmentType;
+  final String? severityLevel;
+
+  const ChatScreen({
+    Key? key,
+    this.initialMessage,
+    this.assessmentScore,
+    this.assessmentType,
+    this.severityLevel,
+  }) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -18,6 +29,55 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<ChatMessage> _messages = [
     ChatMessage("Hello! I'm your AI mental health companion. How can I support you today?", false),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // If launched from results screen, auto-send the initial message
+    if (widget.initialMessage != null && widget.initialMessage!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _sendInitialMessage(widget.initialMessage!);
+      });
+    }
+  }
+
+  void _sendInitialMessage(String text) {
+    setState(() {
+      _messages.insert(0, ChatMessage(text, true));
+    });
+
+    // Simulate AI response
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted) return;
+      setState(() {
+        _messages.insert(0, ChatMessage(
+          _generateContextualResponse(),
+          false,
+        ));
+      });
+    });
+  }
+
+  String _generateContextualResponse() {
+    final type = widget.assessmentType ?? 'assessment';
+    final severity = widget.severityLevel ?? '';
+
+    if (severity == 'Minimal' || severity == 'Mild') {
+      return "Thank you for sharing your $type results with me. "
+          "It's great that you're being proactive about your mental health. "
+          "How have you been feeling lately? Is there anything specific you'd like to talk about?";
+    } else if (severity == 'Moderate') {
+      return "Thank you for sharing your $type results with me. "
+          "I can see you've been going through some challenges. "
+          "Remember, seeking support is a sign of strength. "
+          "Would you like to discuss some strategies that might help?";
+    } else {
+      return "Thank you for trusting me with your $type results. "
+          "I want you to know that what you're feeling is valid, and help is available. "
+          "I'd strongly recommend speaking with a mental health professional. "
+          "In the meantime, would you like to talk about what's been on your mind?";
+    }
+  }
 
   void _sendMessage() {
     final text = _messageController.text.trim();
@@ -80,10 +140,38 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: const Text('AI Support Chat'),
         automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: SafeArea(
         child: Column(
           children: [
+            // Context banner when launched from assessment results
+            if (widget.assessmentType != null)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                color: Colors.blue.shade50,
+                child: Row(
+                  children: [
+                    const Text('📋', style: TextStyle(fontSize: 16)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Discussing your ${widget.assessmentType} results — '
+                        'Score: ${widget.assessmentScore} (${widget.severityLevel})',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.blue.shade800,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             Expanded(
               child: ListView.builder(
                 reverse: true, // Show newest messages at the bottom
