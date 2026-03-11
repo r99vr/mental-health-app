@@ -7,6 +7,9 @@ import 'providers/auth_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 
+/// Global theme notifier — toggle between light and dark mode from anywhere.
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MentalHealthApp());
@@ -21,12 +24,15 @@ class MentalHealthApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: Builder(
-        builder: (context) {
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: themeNotifier,
+        builder: (context, currentMode, _) {
           return MaterialApp(
             title: 'Mental Health App',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: currentMode,
             
             // RTL / Arabic Support
             localizationsDelegates: const [
@@ -56,7 +62,7 @@ class MentalHealthApp extends StatelessWidget {
               },
             ),
           );
-        }
+        },
       ),
     );
   }

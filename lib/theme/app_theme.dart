@@ -68,4 +68,64 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: const Color(0xFF90CAF9),
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      colorScheme: ColorScheme.dark(
+        primary: const Color(0xFF90CAF9),
+        secondary: const Color(0xFF90CAF9),
+        surface: const Color(0xFF1E1E1E),
+        onPrimary: Colors.black,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF1E1E1E),
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Color(0xFF90CAF9)),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF90CAF9),
+          foregroundColor: Colors.black,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFF2C2C2C),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade700),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade700),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF90CAF9), width: 2),
+        ),
+      ),
+      cardColor: const Color(0xFF1E1E1E),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Color(0xFF1E1E1E),
+        selectedItemColor: Color(0xFF90CAF9),
+        unselectedItemColor: Colors.grey,
+      ),
+    );
+  }
 }

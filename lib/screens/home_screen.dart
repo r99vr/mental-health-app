@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../main.dart'; // for themeNotifier
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import 'login_screen.dart';
@@ -46,12 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
+        textDirection: TextDirection.ltr,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.08),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.12),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -87,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 32),
           GridView.count(
             crossAxisCount: 2,
+            childAspectRatio: 1.1,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             mainAxisSpacing: 16,
@@ -140,9 +144,10 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border(
             left: BorderSide(color: iconColor, width: 4),
@@ -159,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(icon, size: 32, color: iconColor),
+            Icon(icon, size: 36, color: iconColor),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -177,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[500],
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                     ),
                   ),
                 ],
@@ -197,6 +202,19 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Mental Health App'),
         actions: [
+          IconButton(
+            icon: Icon(
+              themeNotifier.value == ThemeMode.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            onPressed: () {
+              themeNotifier.value =
+                  themeNotifier.value == ThemeMode.dark
+                      ? ThemeMode.light
+                      : ThemeMode.dark;
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {

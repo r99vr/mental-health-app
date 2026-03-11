@@ -47,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: message.isUser ? Theme.of(context).primaryColor : Colors.white,
+          color: message.isUser ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomRight: message.isUser ? const Radius.circular(0) : const Radius.circular(20),
             bottomLeft: message.isUser ? const Radius.circular(20) : const Radius.circular(0),
@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Text(
           message.text,
           style: TextStyle(
-            color: message.isUser ? Colors.white : Colors.black87,
+            color: message.isUser ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
             fontSize: 16,
           ),
         ),
@@ -97,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
@@ -118,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.grey.shade100,
+                        fillColor: Theme.of(context).scaffoldBackgroundColor,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       ),
                       onSubmitted: (_) => _sendMessage(),
